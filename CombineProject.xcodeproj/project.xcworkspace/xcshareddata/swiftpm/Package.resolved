@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "networklayer",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Karamjitsingh1989/NetworkLayer",
+      "state" : {
+        "branch" : "main",
+        "revision" : "b7cd3dc5fe8f286ae8a1048a4a6fc138025dff45"
+      }
+    }
+  ],
+  "version" : 2
+}
