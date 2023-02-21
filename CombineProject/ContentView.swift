@@ -14,9 +14,13 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            List(self.storyListView.stories, id: \.id) { storyID in
-                NavigationLink(destination: StoryDetailView(storyId: storyID.id)) {
-                    Text("\(storyID.id)")
+            List(self.storyListView.stories, id: \.id) { story in
+                NavigationLink(destination: StoryDetailView(storyId: story.id )) {
+                    HStack {
+                        Text("\(story.id)")
+                        Text(story.title)
+                        
+                    }
                 }
             }
             .padding()

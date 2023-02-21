@@ -21,6 +21,19 @@ class WebService {
         
     }
     
+    func mergeStories(id storyIds:[Int]) -> AnyPublisher<NewStoryDetail, NetworkError> {
+        
+        let storyIds = Array(storyIds.prefix(50))
+        
+        let intialPublisher = getStoryById(id: "\(storyIds[0])")
+        let remainder = Array(storyIds.dropFirst())
+        
+        return remainder.reduce(intialPublisher) { combined, id in
+            return combined.merge(with: getStoryById(id: "\(id)")).eraseToAnyPublisher()
+        }
+    }
+    
+    
     func getStoryById(id: String) -> AnyPublisher<NewStoryDetail, NetworkError>  {
         
         let service = NewsService(httpRequest: RequestHandler(), environment: .development)
@@ -28,6 +41,16 @@ class WebService {
         
     }
     
+    
+    func getAllTopStoriesModelObject() -> AnyPublisher<[NewStoryDetail], NetworkError> {
+        
+        let service = NewsService(httpRequest: RequestHandler(), environment: .development)
+        return service.fetchResult(request: .newStories).flatMap { storyIds in
+            return self.mergeStories(id: storyIds)
+        }.scan([]) { Story, stories -> [NewStoryDetail] in
+            return Story + [stories]
+        }.eraseToAnyPublisher()
+    }
     
     
 }

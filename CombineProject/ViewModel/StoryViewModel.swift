@@ -11,12 +11,14 @@ import Combine
 class StoryListViewModel: ObservableObject {
     
     @Published var stories = [StoryViewModel]()
+    
+   // @Published var storiesObject = [NewStoryDetail]()
     private var cancellable: AnyCancellable?
     
     init() {
-        fetchTopStories()
+        fetchTopStoriesObject()
     }
-    
+   /*
     func fetchTopStories() {
         
         self.cancellable = WebService().getAllTopStories().map { storiesID in
@@ -28,9 +30,37 @@ class StoryListViewModel: ObservableObject {
             self.stories = storyViewModel
         }
     }
+    */
+    func fetchTopStoriesObject() {
+        
+        self.cancellable = WebService().getAllTopStoriesModelObject().map { storiesID in
+            storiesID.map { value in
+                StoryViewModel(story:value)
+            }
+        }.sink { _ in
+        } receiveValue: { storyViewModel in
+            self.stories = storyViewModel
+        }
+    }
+    
 }
 
 
 struct StoryViewModel: Codable {
-    var id: Int
+    
+    let story: NewStoryDetail
+    
+    var id: Int {
+        return self.story.id ?? 0
+    }
+    
+    var title: String {
+        
+        return self.story.title ?? ""
+    }
+    
+    var url : String {
+        
+        return self.story.url ?? ""
+    }
 }
